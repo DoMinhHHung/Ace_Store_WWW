@@ -1,6 +1,7 @@
 package iuh.fit.se.ace_store_www.service.impl;
 
 import iuh.fit.se.ace_store_www.dto.request.CreatePromotionRequest;
+import iuh.fit.se.ace_store_www.dto.request.UpdatePromotionRequest;
 import iuh.fit.se.ace_store_www.dto.response.ApiResponse;
 import iuh.fit.se.ace_store_www.service.PromotionService;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public ApiResponse updatePromotion(Long promotionId, CreatePromotionRequest request) {
+    public ApiResponse updatePromotion(Long promotionId, UpdatePromotionRequest request) {
         return null;
     }
 
