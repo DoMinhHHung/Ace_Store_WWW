@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Sản Phẩm</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #e8f0fe; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #4285f4; color: white; }
+        .promo { background-color: #fff2e0; }
+        .error { color: #d93025; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Product Catalog (Bán đồ công nghệ) 💻</h1>
+
+    <div id="loading-message">Đang tải data, đợi xíu nha...</div>
+    <div id="error-message" class="error" style="display: none;"></div>
+
+    <table id="product-table" style="display: none;">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên Sản Phẩm</th>
+            <th>Loại (Type)</th>
+            <th>Giá Gốc (VND)</th>
+            <th>Tồn Kho</th>
+            <th>Khuyến Mãi (%)</th>
+            <th>Giá Sau KM</th>
+        </tr>
+        </thead>
+        <tbody id="product-data">
+        </tbody>
+    </table>
+</div>
+
+<script th:src="@{/js/product-fetch.js}"></script>
+
+</body>
+</html>

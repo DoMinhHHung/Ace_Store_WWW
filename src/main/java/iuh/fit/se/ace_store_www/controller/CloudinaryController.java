@@ -12,34 +12,31 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/uploads")
 @RequiredArgsConstructor
 public class CloudinaryController {
+
     private final CloudinaryService cloudinaryService;
+
+    // POST /api/uploads/file
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> uploadSingleFile(@RequestParam("file") MultipartFile file) {
         ApiResponse response = cloudinaryService.uploadFile(file);
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(response);
-        }
+        return response.isSuccess()
+                ? ResponseEntity.ok(response)
+                : ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping(value = "/multiple-files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
         ApiResponse response = cloudinaryService.uploadMultipleFile(files);
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(response);
-        }
+        return response.isSuccess()
+                ? ResponseEntity.ok(response)
+                : ResponseEntity.badRequest().body(response);
     }
 
     @DeleteMapping("/delete/{publicId}")
     public ResponseEntity<ApiResponse> deleteFile(@PathVariable String publicId) {
         ApiResponse response = cloudinaryService.deleteFile(publicId);
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(response);
-        }
+        return response.isSuccess()
+                ? ResponseEntity.ok(response)
+                : ResponseEntity.badRequest().body(response);
     }
 }

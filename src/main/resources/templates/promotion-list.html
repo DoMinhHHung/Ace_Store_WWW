@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Khuyến Mãi</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #3498db; color: white; }
+        .active { color: green; font-weight: bold; }
+        .inactive { color: red; }
+        .error { color: #e74c3c; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Promotion Management 😎</h1>
+
+    <div id="loading-message">Loading data, chill xíu nha...</div>
+    <div id="error-message" class="error" style="display: none;"></div>
+
+    <table id="promotion-table" style="display: none;">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên Khuyến Mãi</th>
+            <th>Giảm Giá (%)</th>
+            <th>Bắt Đầu</th>
+            <th>Kết Thúc</th>
+            <th>Trạng Thái</th>
+        </tr>
+        </thead>
+        <tbody id="promotion-data">
+        </tbody>
+    </table>
+</div>
+
+<script th:src="@{/js/promotion-fetch.js}"></script>
+
+</body>
+</html>
