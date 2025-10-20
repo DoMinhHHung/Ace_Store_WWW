@@ -42,10 +42,10 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public ApiResponse createPromotion(CreatePromotionRequest request) {
         if (request.getEndDate().isBefore(request.getStartDate())) {
-            return ApiResponse.error("End Date must be after Start Date, bro.");
+            return ApiResponse.fail("End Date must be after Start Date, bro.");
         }
         if (promotionRepository.findByName(request.getName()) != null) {
-            return ApiResponse.error("Promotion name already exists.");
+            return ApiResponse.fail("Promotion name already exists.");
         }
 
         Promotion promotion = new Promotion();
@@ -60,14 +60,14 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setActive(isActive);
 
         Promotion savedPromotion = promotionRepository.save(promotion);
-        return ApiResponse.success("Promotion created successfully.", toPromotionResponse(savedPromotion));
+        return ApiResponse.ok("Promotion created successfully.", toPromotionResponse(savedPromotion));
     }
 
     @Override
     public ApiResponse getPromotionDetail(Long promotionId) {
         Promotion promotion = promotionRepository.findById(promotionId)
                 .orElseThrow(() -> new RuntimeException("Promotion not found with ID: " + promotionId));
-        return ApiResponse.success(toPromotionResponse(promotion));
+        return ApiResponse.ok(toPromotionResponse(promotion));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PromotionServiceImpl implements PromotionService {
                 "currentPage", promotionPage.getNumber()
         );
 
-        return ApiResponse.success("Promotions retrieved successfully.", pageData);
+        return ApiResponse.ok("Promotions retrieved successfully.", pageData);
     }
 
     @Override
@@ -90,11 +90,11 @@ public class PromotionServiceImpl implements PromotionService {
                 .orElseThrow(() -> new RuntimeException("Promotion not found with ID: " + promotionId));
 
         if (request.getEndDate().isBefore(request.getStartDate())) {
-            return ApiResponse.error("End Date must be after Start Date, bro.");
+            return ApiResponse.fail("End Date must be after Start Date, bro.");
         }
         Promotion promotionByName = promotionRepository.findByName(request.getName());
         if (promotionByName != null && !promotionByName.getId().equals(promotionId)) {
-            return ApiResponse.error("Promotion name already exists.");
+            return ApiResponse.fail("Promotion name already exists.");
         }
 
         existingPromotion.setName(request.getName());
@@ -108,7 +108,7 @@ public class PromotionServiceImpl implements PromotionService {
         existingPromotion.setActive(isActive);
 
         Promotion updatedPromotion = promotionRepository.save(existingPromotion);
-        return ApiResponse.success("Promotion updated successfully.", toPromotionResponse(updatedPromotion));
+        return ApiResponse.ok("Promotion updated successfully.", toPromotionResponse(updatedPromotion));
     }
 
     @Override
@@ -122,7 +122,7 @@ public class PromotionServiceImpl implements PromotionService {
         productRepository.saveAll(promotion.getProducts());
 
         promotionRepository.deleteById(promotionId);
-        return ApiResponse.success("Promotion deleted successfully.", null);
+        return ApiResponse.ok("Promotion deleted successfully.", null);
     }
 
     @Override
@@ -133,6 +133,6 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setActive(isActive);
         Promotion updatedPromotion = promotionRepository.save(promotion);
 
-        return ApiResponse.success("Promotion active status updated.", toPromotionResponse(updatedPromotion));
+        return ApiResponse.ok("Promotion active status updated.", toPromotionResponse(updatedPromotion));
     }
 }

@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ApiResponse createProduct(CreateProductRequest request) {
         if (productRepository.findByName(request.getName()) != null) {
-            return ApiResponse.error("Product name already exists, bro.");
+            return ApiResponse.fail("Product name already exists, bro.");
         }
 
         Promotion promotion = null;
@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
         productSpecificationRepository.saveAll(specs);
         savedProduct.setSpecifications(specs);
 
-        return ApiResponse.success("Product created successfully.", toProductResponse(savedProduct));
+        return ApiResponse.ok("Product created successfully.", toProductResponse(savedProduct));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
 
-        return ApiResponse.success(toProductResponse(product));
+        return ApiResponse.ok(toProductResponse(product));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
                 "currentPage", productPage.getNumber()
         );
 
-        return ApiResponse.success("Products retrieved successfully.", pageData);
+        return ApiResponse.ok("Products retrieved successfully.", pageData);
     }
 
     @Override
@@ -155,15 +155,15 @@ public class ProductServiceImpl implements ProductService {
         productSpecificationRepository.saveAll(newSpecs);
 
         Product updatedProduct = productRepository.save(existingProduct);
-        return ApiResponse.success("Product updated successfully.", toProductResponse(updatedProduct));
+        return ApiResponse.ok("Product updated successfully.", toProductResponse(updatedProduct));
     }
 
     @Override
     public ApiResponse deleteProduct(Long productId) {
         if (!productRepository.existsById(productId)) {
-            return ApiResponse.error("Product not found with ID: " + productId);
+            return ApiResponse.fail("Product not found with ID: " + productId);
         }
         productRepository.deleteById(productId);
-        return ApiResponse.success("Product deleted successfully.", null);
+        return ApiResponse.ok("Product deleted successfully.", null);
     }
 }
