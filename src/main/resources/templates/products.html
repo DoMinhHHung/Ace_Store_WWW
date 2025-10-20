@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf?.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
+    <title>Quản Lý Sản Phẩm</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 30px; }
+        .actions { margin-bottom: 20px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success:hover { background: #229954; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #34495e; color: white; font-weight: 600; }
+        tr:hover { background: #f8f9fa; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 5% auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; }
+        .modal-header { border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: #aaa; }
+        .close:hover { color: #000; }
+        .error { color: #e74c3c; margin-top: 10px; padding: 10px; background: #fadbd8; border-radius: 4px; display: none; }
+        .success { color: #27ae60; margin-top: 10px; padding: 10px; background: #d5f4e6; border-radius: 4px; display: none; }
+        .loading { display: none; text-align: center; padding: 20px; color: #3498db; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛍️ Quản Lý Sản Phẩm</h1>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="openCreateModal()">➕ Thêm Sản Phẩm Mới</button>
+            <button class="btn btn-success" onclick="loadProducts()">🔄 Làm Mới</button>
+        </div>
+
+        <div class="loading" id="loading">Đang tải dữ liệu...</div>
+        <div class="error" id="error"></div>
+        <div class="success" id="success"></div>
+
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Thương Hiệu</th>
+                    <th>Loại</th>
+                    <th>Giá (VNĐ)</th>
+                    <th>Tồn Kho</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="productsBody">
+                <!-- Data will be loaded via JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 id="modalTitle">Thêm Sản Phẩm Mới</h2>
+            </div>
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="name">Tên Sản Phẩm *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Thương Hiệu</label>
+                    <input type="text" id="brand" name="brand">
+                </div>
+                <div class="form-group">
+                    <label for="description">Mô Tả</label>
+                    <textarea id="description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Giá (VNĐ) *</label>
+                    <input type="number" id="price" name="price" min="0" step="1000" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Tồn Kho *</label>
+                    <input type="number" id="stock" name="stock" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="productType">Loại Sản Phẩm *</label>
+                    <select id="productType" name="productType" required>
+                        <option value="">-- Chọn loại --</option>
+                        <option value="LAPTOP">Laptop</option>
+                        <option value="PHONE">Điện Thoại</option>
+                        <option value="TABLET">Máy Tính Bảng</option>
+                        <option value="ACCESSORY">Phụ Kiện</option>
+                        <option value="OTHER">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mainImage">URL Hình Ảnh</label>
+                    <input type="text" id="mainImage" name="mainImage">
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                    <button type="button" class="btn" onclick="closeModal()">❌ Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/products.js}"></script>
+</body>
+</html>

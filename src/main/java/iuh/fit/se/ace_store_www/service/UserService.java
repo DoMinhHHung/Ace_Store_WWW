@@ -17,4 +17,6 @@ public interface UserService {
     ApiResponse<String> removeAddress(Long userId, Long addressId);
     ApiResponse<List<AddressResponse>> listAddresses(Long userId);
     ApiResponse<String> grantAdminRole(Long userId);
+    ApiResponse<List<UserResponse>> getAllUsers();
+    ApiResponse<String> deleteUser(Long userId);
 }
