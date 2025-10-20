@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -32,8 +32,10 @@ public class PromotionServiceImpl implements PromotionService {
         response.setId(promotion.getId());
         response.setName(promotion.getName());
         response.setDescription(promotion.getDescription());
-        response.setDiscountPercent(promotion.getDiscountPercent());
-        response.setStartDate(promotion.getStartDate());
+        // stored in entity as fraction (0.0..1.0) -> return percent (0..100)
+        response.setDiscountPercent(promotion.getDiscountPercent() != null ? promotion.getDiscountPercent() * 100 : null);
+        // convert LocalDateTime -> LocalDate for response (null-safe)
+        response.setStartDate(promotion.getStartDate() );
         response.setEndDate(promotion.getEndDate());
         response.setActive(promotion.isActive());
         return response;
@@ -51,12 +53,13 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotion = new Promotion();
         promotion.setName(request.getName());
         promotion.setDescription(request.getDescription());
-        promotion.setDiscountPercent(request.getDiscountPercent());
+        // request.discountPercent is percent (0..100) -> store as fraction (0.0..1.0)
+        promotion.setDiscountPercent(request.getDiscountPercent() != null ? request.getDiscountPercent() / 100.0 : null);
         promotion.setStartDate(request.getStartDate());
         promotion.setEndDate(request.getEndDate());
 
-        boolean isActive = LocalDateTime.now().isBefore(request.getEndDate()) &&
-                !LocalDateTime.now().isBefore(request.getStartDate());
+        boolean isActive = LocalDateTime.now().isBefore(promotion.getEndDate()) &&
+                !LocalDateTime.now().isBefore(promotion.getStartDate());
         promotion.setActive(isActive);
 
         Promotion savedPromotion = promotionRepository.save(promotion);
@@ -89,22 +92,26 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion existingPromotion = promotionRepository.findById(promotionId)
                 .orElseThrow(() -> new RuntimeException("Promotion not found with ID: " + promotionId));
 
-        if (request.getEndDate().isBefore(request.getStartDate())) {
-            return ApiResponse.fail("End Date must be after Start Date, bro.");
+        if (request.getStartDate() != null && request.getEndDate() != null && request.getEndDate().isBefore(request.getStartDate())) {
+            return ApiResponse.fail("End Date must be after Start Date");
         }
         Promotion promotionByName = promotionRepository.findByName(request.getName());
         if (promotionByName != null && !promotionByName.getId().equals(promotionId)) {
             return ApiResponse.fail("Promotion name already exists.");
         }
 
-        existingPromotion.setName(request.getName());
-        existingPromotion.setDescription(request.getDescription());
-        existingPromotion.setDiscountPercent(request.getDiscountPercent());
-        existingPromotion.setStartDate(request.getStartDate());
-        existingPromotion.setEndDate(request.getEndDate());
+        if (request.getName() != null) existingPromotion.setName(request.getName());
+        if (request.getDescription() != null) existingPromotion.setDescription(request.getDescription());
+        if (request.getDiscountPercent() != null) existingPromotion.setDiscountPercent(request.getDiscountPercent() / 100.0);
+        if (request.getStartDate() != null) {
+            existingPromotion.setStartDate(request.getStartDate());
+        }
+        if (request.getEndDate() != null) {
+            existingPromotion.setEndDate(request.getEndDate());
+        }
 
-        boolean isActive = LocalDateTime.now().isBefore(request.getEndDate()) &&
-                !LocalDateTime.now().isBefore(request.getStartDate());
+        boolean isActive = LocalDateTime.now().isBefore(existingPromotion.getEndDate()) &&
+                !LocalDateTime.now().isBefore(existingPromotion.getStartDate());
         existingPromotion.setActive(isActive);
 
         Promotion updatedPromotion = promotionRepository.save(existingPromotion);
