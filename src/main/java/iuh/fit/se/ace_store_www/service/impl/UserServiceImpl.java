@@ -183,4 +183,21 @@ public class UserServiceImpl implements UserService {
         userRepository.save(u);
         return ApiResponse.ok("Granted ROLE_ADMIN to user " + u.getEmail());
     }
+
+    @Override
+    public ApiResponse<List<UserResponse>> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserResponse> userResponses = users.stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
+        return ApiResponse.ok(userResponses);
+    }
+
+    @Override
+    public ApiResponse<String> deleteUser(Long userId) {
+        var opt = userRepository.findById(userId);
+        if (opt.isEmpty()) return ApiResponse.fail("User not found");
+        userRepository.deleteById(userId);
+        return ApiResponse.ok("User deleted successfully");
+    }
 }
