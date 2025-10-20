@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingMessage = document.getElementById('loading-message');
     const errorMessage = document.getElementById('error-message');
 
-    // SỬA ĐỊA CHỈ API: BỎ /v1 như mày muốn
     const API_URL = '/api/products?page=0&size=10&sort=id,asc';
 
     // Định dạng tiền tệ VND
