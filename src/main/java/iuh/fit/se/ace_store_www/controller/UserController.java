@@ -49,4 +49,16 @@ public class UserController {
     public ResponseEntity<ApiResponse<?>> listAddresses(@PathVariable Long id) {
         return ResponseEntity.ok(userService.listAddresses(id));
     }
+
+    // Get all users - for admin interface
+    @GetMapping
+    public ResponseEntity<ApiResponse<?>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // Delete user - for admin interface
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.deleteUser(id));
+    }
 }

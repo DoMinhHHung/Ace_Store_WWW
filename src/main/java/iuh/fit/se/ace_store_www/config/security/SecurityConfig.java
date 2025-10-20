@@ -28,7 +28,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 // authorize requests
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/oauth2/**", "/error", "/actuator/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/oauth2/**", "/error", "/actuator/**", "/h2-console/**", 
+                                        "/fe/**", "/api/**", "/js/**", "/css/**", "/img/**", "/*.js", "/*.css").permitAll()
                         .anyRequest().authenticated()
                 )
                 // oauth2 login success handler
