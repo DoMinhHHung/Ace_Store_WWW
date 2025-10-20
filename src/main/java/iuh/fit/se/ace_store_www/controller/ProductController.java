@@ -33,7 +33,7 @@ public class ProductController {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error(e.getMessage()));
+                    .body(ApiResponse.fail(e.getMessage()));
         }
     }
 
@@ -50,7 +50,7 @@ public class ProductController {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error(e.getMessage()));
+                    .body(ApiResponse.fail(e.getMessage()));
         }
     }
 

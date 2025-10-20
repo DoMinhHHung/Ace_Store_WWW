@@ -1,61 +1,60 @@
 package iuh.fit.se.ace_store_www.entity;
 
+import iuh.fit.se.ace_store_www.entity.enums.AuthProvider;
 import iuh.fit.se.ace_store_www.entity.enums.Role;
-import iuh.fit.se.ace_store_www.entity.enums.Provider;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Table(name = "users")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="first_name", nullable = false)
     private String firstName;
-    @Column(nullable = false, length = 50)
+
+    @Column(name="last_name", nullable = false)
     private String lastName;
 
-    @Column(nullable = false, length = 100)
+    @Transient
+    public String getFullName() {
+        String fn = firstName == null ? "" : firstName.trim();
+        String ln = lastName == null ? "" : lastName.trim();
+        return (fn + " " + ln).trim();
+    }
+
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(length = 20)
     private String phone;
 
-    @Column(nullable = false, length = 60)
+    @Column(nullable = false)
     private String password;
 
     private LocalDate dob;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
-    @Column(nullable = false)
     private boolean enabled = false;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Provider provider = Provider.LOCAL;
+    private AuthProvider provider = AuthProvider.LOCAL;
 
-    private String verificationToken;
-    private LocalDateTime tokenExpiration;
+    @Builder.Default
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<Role> roles = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses = new ArrayList<>();
-
-    public String getFullName() {
-        return this.firstName + " " + this.lastName;
-    }
-
+    private Set<Address> addresses = new HashSet<>();
 }

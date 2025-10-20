@@ -2,27 +2,27 @@ package iuh.fit.se.ace_store_www.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.Instant;
 
 @Entity
-@Table(name = "addresses")
+@Table(name = "verification_tokens")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Address {
+public class VerificationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String line1;
-    private String line2;
-    private String city;
-    private String state;
-    private String postalCode;
-    private String country;
+    @Column(nullable = false, unique = true)
+    private String token;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(nullable = false)
+    private Instant expiryDate;
 }

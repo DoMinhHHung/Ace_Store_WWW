@@ -1,25 +1,27 @@
 package iuh.fit.se.ace_store_www.dto.response;
 
-import iuh.fit.se.ace_store_www.entity.enums.Provider;
-import iuh.fit.se.ace_store_www.entity.enums.Role;
+import iuh.fit.se.ace_store_www.entity.enums.AuthProvider;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
-public class UserResponseDTO {
+@NoArgsConstructor
+public class UserResponse {
     private Long id;
     private String firstName;
     private String lastName;
     private String fullName;
-
     private String email;
     private String phone;
     private LocalDate dob;
-
-    private Role role;
     private boolean enabled;
-    private Provider provider;
+    private AuthProvider provider;
+    private Set<String> roles;
+    private Set<AddressResponse> addresses;
 }
