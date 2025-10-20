@@ -1,0 +1,46 @@
+# H2 Database Configuration
+spring.datasource.url=jdbc:h2:mem:ace_store_db
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+# JPA/Hibernate Configuration
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+
+# H2 Console
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+# Thymeleaf Configuration
+spring.thymeleaf.cache=false
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+
+# JWT Configuration (for development only - change in production!)
+jwt.secret=ThisIsAVerySecretKeyForDevelopmentOnlyPleaseChangeInProduction123456789
+jwt.expiration=86400000
+
+# Cloudinary Configuration (optional - set if using image upload)
+cloudinary.cloud_name=demo
+cloudinary.api_key=dummy
+cloudinary.api_secret=dummy
+
+# Email Configuration (for development - use fake SMTP)
+spring.mail.host=localhost
+spring.mail.port=1025
+spring.mail.username=test
+spring.mail.password=test
+spring.mail.properties.mail.smtp.auth=false
+spring.mail.properties.mail.smtp.starttls.enable=false
+
+# OAuth2 Configuration (dummy for development)
+spring.security.oauth2.client.registration.google.client-id=dummy
+spring.security.oauth2.client.registration.google.client-secret=dummy
+spring.security.oauth2.client.registration.google.scope=profile,email
+
+# Logging
+logging.level.org.springframework.security=DEBUG
+logging.level.iuh.fit.se.ace_store_www=DEBUG

@@ -19,7 +19,16 @@ Sau khi khởi động ứng dụng, bạn có thể truy cập các trang sau:
 - Java 17 hoặc cao hơn
 - Maven 3.6+ 
 
-### 2. Build và chạy ứng dụng
+### 2. Cấu hình application.properties
+
+Trước tiên, copy file mẫu và điều chỉnh nếu cần:
+```bash
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+```
+
+File này đã được cấu hình với các giá trị mặc định cho development.
+
+### 3. Build và chạy ứng dụng
 
 ```bash
 # Build project
@@ -36,7 +45,7 @@ Hoặc:
 java -jar target/Ace_Store_WWW-0.0.1-SNAPSHOT.jar
 ```
 
-### 3. Truy cập ứng dụng
+### 4. Truy cập ứng dụng
 
 Sau khi ứng dụng khởi động thành công, mở trình duyệt và truy cập:
 - **Base URL**: http://localhost:8080
